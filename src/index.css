@@ -1,0 +1,184 @@
+/* Import da fonte Inter do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Layer base para estilos globais */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-cubos-bg text-cubos-white transition-colors duration-200;
+  }
+
+  /* Light mode body */
+  body.light {
+    @apply bg-gray-50 text-gray-900;
+  }
+
+  /* Customização da scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-900;
+  }
+
+  body.light ::-webkit-scrollbar-track {
+    @apply bg-gray-200;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-cubos-placeholder rounded;
+  }
+
+  body.light ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 rounded;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-cubos-primary;
+  }
+}
+
+/* Layer components para classes reutilizáveis do Cubos Movies */
+@layer components {
+  .btn-primary {
+    @apply bg-cubos-primary hover:bg-primary-600 text-cubos-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-cubos-primary/25 disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-700/70 rounded-lg bg-gray-900/30 backdrop-blur-sm text-cubos-white placeholder-cubos-placeholder transition-all duration-200 focus:outline-none focus:border-cubos-primary focus:ring-2 focus:ring-cubos-primary/20 focus:bg-gray-900/50 disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  /* Input field no modo claro */
+  body.light .input-field {
+    @apply bg-white/70 border-gray-300 text-gray-900 placeholder-gray-500 focus:bg-white/90 focus:border-cubos-primary;
+  }
+
+  .card {
+    @apply bg-gray-800/50 rounded-xl shadow-card transition-all duration-300 backdrop-blur-sm;
+  }
+
+  .card-hover {
+    @apply hover:-translate-y-1 hover:shadow-card-hover;
+  }
+
+  /* Estilo para o background pattern do Cubos com gradientes */
+  .cubos-bg-pattern {
+    background-image: 
+      linear-gradient(
+        135deg, 
+        rgba(35, 34, 37, 0.95) 0%, 
+        rgba(35, 34, 37, 0.85) 25%,
+        rgba(35, 34, 37, 0.75) 50%,
+        rgba(35, 34, 37, 0.85) 75%,
+        rgba(35, 34, 37, 0.95) 100%
+      ),
+      linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.4) 50%,
+        rgba(0, 0, 0, 0.7) 100%
+      ),
+      url('/src/assets/BACKGROUND-krists-luhaers-543526-unsplash.png');
+    background-size: cover, cover, cover;
+    background-position: center, center, center;
+    background-attachment: fixed;
+    background-blend-mode: multiply, overlay, normal;
+  }
+
+  /* Background pattern no modo claro */
+  body.light .cubos-bg-pattern {
+    background-image: 
+      linear-gradient(
+        135deg, 
+        rgba(255, 255, 255, 0.95) 0%, 
+        rgba(255, 255, 255, 0.85) 25%,
+        rgba(255, 255, 255, 0.75) 50%,
+        rgba(255, 255, 255, 0.85) 75%,
+        rgba(255, 255, 255, 0.95) 100%
+      ),
+      linear-gradient(
+        45deg,
+        rgba(142, 78, 198, 0.1) 0%,
+        rgba(142, 78, 198, 0.05) 50%,
+        rgba(142, 78, 198, 0.1) 100%
+      ),
+      url('/src/assets/BACKGROUND-krists-luhaers-543526-unsplash.png');
+    background-size: cover, cover, cover;
+    background-position: center, center, center;
+    background-attachment: fixed;
+    background-blend-mode: multiply, overlay, normal;
+  }
+
+  /* Layout da tela de login seguindo o Figma */
+  .login-container {
+    @apply min-h-screen bg-cubos-bg cubos-bg-pattern flex flex-col;
+  }
+
+  body.light .login-container {
+    @apply bg-gray-50;
+  }
+
+  .login-header {
+    @apply w-full py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between relative z-10;
+  }
+
+  .login-form-container {
+    @apply flex-1 flex items-center justify-center px-4 py-8 relative z-10;
+  }
+
+  .login-form {
+    @apply w-full max-w-md space-y-6 bg-gray-900/20 backdrop-blur-md p-8 rounded-2xl border border-gray-800/30 shadow-2xl;
+  }
+
+  /* Login form no modo claro */
+  body.light .login-form {
+    @apply bg-white/80 border-gray-200/30;
+  }
+
+  .login-footer {
+    @apply w-full py-6 px-4 text-center text-sm text-cubos-placeholder/80 relative z-10;
+  }
+
+  /* Login footer no modo claro */
+  body.light .login-footer {
+    @apply text-gray-600;
+  }
+
+  /* Utility classes para text truncation */
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}
+
+/* Utilities para o tema Cubos */
+@layer utilities {
+  .theme-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .cubos-gradient {
+    background: linear-gradient(135deg, #8E4EC6 0%, #6a3a9f 100%);
+  }
+
+  .cubos-glow {
+    box-shadow: 0 0 20px rgba(142, 78, 198, 0.3);
+  }
+}
