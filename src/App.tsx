@@ -11,6 +11,7 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Home } from "./pages/Home";
 import { MovieDetails } from "./pages/MovieDetails";
+import { ForgotPassword } from "./pages/ForgotPassword";
 
 function App() {
   return (
@@ -26,6 +27,10 @@ function App() {
               <Route
                 path="/cadastro"
                 element={<Register />}
+              />
+              <Route
+                path="/esqueceu-senha"
+                element={<ForgotPassword />}
               />
 
               <Route

@@ -6,7 +6,7 @@ export const FilterIcon: React.FC<IconWithStrokeProps> = ({
   color = 'currentColor',
   strokeWidth = 2,
   className = '',
-  title = 'Filtros',
+  title,
   ...props
 }) => {
   return (
@@ -15,72 +15,17 @@ export const FilterIcon: React.FC<IconWithStrokeProps> = ({
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={className}
-      aria-label={title}
       role="img"
+      aria-hidden={!title}
       {...props}
     >
-      <path 
-        d="M5 12L5 4" 
-        stroke={color} 
-        strokeWidth={strokeWidth} 
-        strokeLinecap="round"
-      />
-      <path 
-        d="M19 20L19 18" 
-        stroke={color} 
-        strokeWidth={strokeWidth} 
-        strokeLinecap="round"
-      />
-      <path 
-        d="M5 20L5 16" 
-        stroke={color} 
-        strokeWidth={strokeWidth} 
-        strokeLinecap="round"
-      />
-      <path 
-        d="M19 12L19 4" 
-        stroke={color} 
-        strokeWidth={strokeWidth} 
-        strokeLinecap="round"
-      />
-      <path 
-        d="M12 7L12 4" 
-        stroke={color} 
-        strokeWidth={strokeWidth} 
-        strokeLinecap="round"
-      />
-      <path 
-        d="M12 20L12 12" 
-        stroke={color} 
-        strokeWidth={strokeWidth} 
-        strokeLinecap="round"
-      />
-      <circle 
-        cx="5" 
-        cy="14" 
-        r="2" 
-        stroke={color} 
-        strokeWidth={strokeWidth} 
-        strokeLinecap="round"
-      />
-      <circle 
-        cx="12" 
-        cy="9" 
-        r="2" 
-        stroke={color} 
-        strokeWidth={strokeWidth} 
-        strokeLinecap="round"
-      />
-      <circle 
-        cx="19" 
-        cy="15" 
-        r="2" 
-        stroke={color} 
-        strokeWidth={strokeWidth} 
-        strokeLinecap="round"
-      />
+      {title && <title>{title}</title>}
+      <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46 22,3" />
     </svg>
   );
 }; 

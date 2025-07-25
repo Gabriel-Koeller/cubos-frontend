@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { Logo } from "../components/Logo";
-import { ThemeToggle } from "../components/ThemeToggle";
+import { Header } from "../components/Header";
+import { Footer } from "../components/Footer";
 
 export const Register: React.FC = () => {
   const [name, setName] = useState("");
@@ -46,28 +46,25 @@ export const Register: React.FC = () => {
   };
 
   return (
-    <div className="login-container theme-transition">
-      <header className="login-header">
-        <Logo />
-        <ThemeToggle />
-      </header>
+    <div className="min-h-screen bg-cubos-bg cubos-bg-pattern flex flex-col">
+      {/* Header sem botão logout */}
+      <Header showUserActions={false} />
 
-      <div className="login-form-container">
-        <div className="login-form theme-transition">
-          <h2 className="text-center mb-8 text-gray-900 dark:text-cubos-white text-2xl font-bold">
-            Criar Conta
-          </h2>
-
+      {/* Form Container */}
+      <div className="flex-1 flex items-center justify-center px-4 py-8 relative z-10">
+        <div className="w-full max-w-md space-y-6 bg-gray-900/60 bg-cubos-bg-pattern dark:bg-gray-900/20  backdrop-blur-md p-8 rounded-2xl border border-gray-800/30 shadow-2xl">
+          {/* Form */}
           <form
             onSubmit={handleSubmit}
             className="space-y-6"
           >
+            {/* Nome Field */}
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium mb-2 text-gray-800 dark:text-cubos-white"
+                className="block text-sm font-medium mb-2 text-cubos-white"
               >
-                Nome Completo
+                Nome completo
               </label>
               <input
                 id="name"
@@ -80,10 +77,11 @@ export const Register: React.FC = () => {
               />
             </div>
 
+            {/* E-mail Field */}
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium mb-2 text-gray-800 dark:text-cubos-white"
+                className="block text-sm font-medium mb-2 text-cubos-white"
               >
                 E-mail
               </label>
@@ -98,10 +96,11 @@ export const Register: React.FC = () => {
               />
             </div>
 
+            {/* Senha Field */}
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium mb-2 text-gray-800 dark:text-cubos-white"
+                className="block text-sm font-medium mb-2 text-cubos-white"
               >
                 Senha
               </label>
@@ -113,15 +112,17 @@ export const Register: React.FC = () => {
                 className="input-field theme-transition"
                 placeholder="Digite sua senha"
                 required
+                minLength={6}
               />
             </div>
 
+            {/* Confirmar Senha Field */}
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium mb-2 text-gray-800 dark:text-cubos-white"
+                className="block text-sm font-medium mb-2 text-cubos-white"
               >
-                Confirmar Senha
+                Confirmar senha
               </label>
               <input
                 id="confirmPassword"
@@ -131,43 +132,44 @@ export const Register: React.FC = () => {
                 className="input-field theme-transition"
                 placeholder="Confirme sua senha"
                 required
+                minLength={6}
               />
             </div>
 
+            {/* Error Message */}
             {error && (
               <div className="text-red-700 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-900/20 dark:border-red-500/20 text-sm text-center p-3 rounded-lg border theme-transition">
                 {error}
               </div>
             )}
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
               className="w-full btn-primary text-lg font-semibold theme-transition"
             >
-              {isLoading ? "Criando conta..." : "Criar Conta"}
+              {isLoading ? "Criando conta..." : "Criar conta"}
             </button>
           </form>
 
+          {/* Login Link */}
           <div className="mt-6 text-center">
-            <p className="text-gray-600 dark:text-cubos-placeholder text-sm">
+            <p className="dark:text-gray-400  dark:text-cubos-placeholder text-sm">
               Já tem uma conta?{" "}
               <Link
                 to="/login"
                 className="text-primary-600 hover:text-primary-700 dark:text-cubos-primary dark:hover:text-primary-400 font-medium transition-colors duration-200"
               >
-                Faça login
+                Fazer login
               </Link>
             </p>
           </div>
         </div>
       </div>
 
-      <footer className="login-footer theme-transition">
-        <p>
-          2025 © Todos os direitos reservados a <strong>Cubos Movies</strong>
-        </p>
-      </footer>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

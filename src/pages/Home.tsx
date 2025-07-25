@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
-import { ThemeToggle } from "../components/ThemeToggle";
+import { Header } from "../components/Header";
+import { Footer } from "../components/Footer";
+import { MovieCard } from "../components/MovieCard";
+import { Pagination } from "../components/Pagination";
+import { FilterModal } from "../components/FilterModal";
+import { FilterIcon } from "../components/icons";
 import moviesData from "../data/movies.json";
 import type { Movie, Genre } from "../types";
 import { useNavigate } from "react-router-dom";
 
 export const Home: React.FC = () => {
-  const { user, logout } = useAuth();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const moviesPerPage = 10;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +34,13 @@ export const Home: React.FC = () => {
     return matchesSearch && matchesGenre;
   });
 
+  const totalPages = Math.ceil(filteredMovies.length / moviesPerPage);
+  const startIndex = (currentPage - 1) * moviesPerPage;
+  const currentMovies = filteredMovies.slice(
+    startIndex,
+    startIndex + moviesPerPage
+  );
+
   const getGenreNames = (genreIds: number[]) => {
     return genreIds
       .map((id) => genres.find((genre) => genre.id === id)?.name)
@@ -35,241 +48,189 @@ export const Home: React.FC = () => {
       .join(", ");
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("pt-BR");
-  };
-
   const handleMovieClick = (movieId: string) => {
     navigate(`/filme/${movieId}`);
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleClearFilters = () => {
+    setSearchTerm("");
+    setSelectedGenre(null);
+  };
+
+  const getActiveFiltersCount = () => {
+    let count = 0;
+    if (searchTerm) count++;
+    if (selectedGenre) count++;
+    return count;
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedGenre]);
+
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      {/* Header */}
-      <header
-        className="
-        sticky top-0 z-50 
-        bg-white/90 dark:bg-gray-900/90 
-        border-b border-gray-200 dark:border-gray-700
-        backdrop-blur-md
-        transition-colors duration-200
-      "
-      >
-        {/* Header Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Top Row - Title and User Actions */}
-          <div
-            className="
-            flex items-center justify-between
-            py-4
-          "
-          >
-            <h1
-              className="
-              text-primary-500 text-xl sm:text-2xl lg:text-3xl font-bold
-            "
-            >
-              Cubos Movies
+    <div className="min-h-screen bg-cubos-bg cubos-bg-pattern flex flex-col">
+      <Header />
+
+      <div className="max-w-[1366px] mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl font-bold text-cubos-white">
+              Filmes Populares
             </h1>
 
-            {/* User Actions */}
-            <div className="flex items-center gap-3">
-              <div
-                className="
-                hidden sm:flex items-center gap-2
-                text-gray-700 dark:text-gray-300 font-medium
-              "
-              >
-                {user?.avatar && (
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
-                    className="w-8 h-8 rounded-full border-2 border-primary-500"
-                  />
+            {/* Indicador de filtros ativos */}
+            {getActiveFiltersCount() > 0 && (
+              <span className="px-3 py-1 bg-cubos-primary/20 text-cubos-primary text-sm font-medium rounded-full border border-cubos-primary/30">
+                {getActiveFiltersCount()} filtro
+                {getActiveFiltersCount() > 1 ? "s" : ""} ativo
+                {getActiveFiltersCount() > 1 ? "s" : ""}
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsFilterModalOpen(true)}
+              className="h-[44px] flex items-center gap-2 px-4 py-3 border border-gray-700/70 rounded-lg bg-gray-900/30 backdrop-blur-sm text-cubos-white hover:border-cubos-primary/50 transition-all duration-200 whitespace-nowrap relative"
+            >
+              <FilterIcon size={20} />
+              Filtros
+              {getActiveFiltersCount() > 0 && (
+                <span className="absolute -top-2 -right-2 w-5 h-5 bg-cubos-primary text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  {getActiveFiltersCount()}
+                </span>
+              )}
+            </button>
+
+            <button className="h-[44px] btn-primary whitespace-nowrap">
+              Adicionar Filme
+            </button>
+          </div>
+        </div>
+
+        {(searchTerm || selectedGenre) && (
+          <div className="mt-4 p-4 bg-gray-900/30 backdrop-blur-sm rounded-lg border border-gray-700/50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-cubos-white font-medium text-sm">
+                  Filtros aplicados:
+                </span>
+                {searchTerm && (
+                  <span className="inline-flex items-center gap-1 bg-cubos-primary/20 text-cubos-primary px-3 py-1 rounded-full text-sm border border-cubos-primary/30">
+                    <span>Nome: "{searchTerm}"</span>
+                    <button
+                      onClick={() => setSearchTerm("")}
+                      className="hover:bg-cubos-primary/20 rounded-full p-0.5 transition-colors"
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </span>
                 )}
-                <span className="hidden md:inline">Olá, {user?.name}</span>
+                {selectedGenre && (
+                  <span className="inline-flex items-center gap-1 bg-cubos-primary/20 text-cubos-primary px-3 py-1 rounded-full text-sm border border-cubos-primary/30">
+                    <span>
+                      Gênero: {genres.find((g) => g.id === selectedGenre)?.name}
+                    </span>
+                    <button
+                      onClick={() => setSelectedGenre(null)}
+                      className="hover:bg-cubos-primary/20 rounded-full p-0.5 transition-colors"
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </span>
+                )}
               </div>
-              <ThemeToggle />
               <button
-                onClick={logout}
-                className="
-                  bg-red-500 hover:bg-red-600 
-                  text-white text-sm font-medium 
-                  px-3 py-2 rounded-md
-                  transition-all duration-200 
-                  hover:-translate-y-0.5
-                "
+                onClick={handleClearFilters}
+                className="text-cubos-placeholder hover:text-cubos-white text-sm font-medium transition-colors"
               >
-                Sair
+                Limpar todos
               </button>
             </div>
           </div>
+        )}
+      </div>
 
-          {/* Search and Filters Row */}
-          <div
-            className="
-            flex flex-col sm:flex-row gap-3
-            pb-4
-          "
-          >
-            <div className="flex-1">
-              <input
-                type="text"
-                placeholder="Buscar filmes..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="
-                  w-full px-4 py-3 
-                  border border-gray-300 dark:border-gray-600 
-                  rounded-lg 
-                  bg-white dark:bg-gray-800 
-                  text-gray-900 dark:text-white 
-                  placeholder-gray-500
-                  transition-all duration-200
-                  focus:outline-none focus:border-primary-500 
-                  focus:ring-2 focus:ring-primary-500/20
-                "
+      <main className="max-w-[1366px] mx-auto px-4 sm:px-6 lg:px-8 pb-8 flex-1 w-full">
+        {currentMovies.length === 0 ? (
+          <div className="text-center py-16 bg-gray-900/30 backdrop-blur-sm rounded-lg border border-gray-700/50">
+            <div className="mb-4">
+              <FilterIcon
+                size={48}
+                className="text-cubos-white mx-auto mb-4"
               />
             </div>
-
-            <select
-              value={selectedGenre || ""}
-              onChange={(e) =>
-                setSelectedGenre(e.target.value ? Number(e.target.value) : null)
-              }
-              className="
-                px-4 py-3 min-w-[180px]
-                border border-gray-300 dark:border-gray-600 
-                rounded-lg 
-                bg-white dark:bg-gray-800 
-                text-gray-900 dark:text-white 
-                cursor-pointer
-                transition-all duration-200
-                focus:outline-none focus:border-primary-500
-              "
+            <p className="text-cubos-white text-lg mb-2">
+              Nenhum filme encontrado
+            </p>
+            <p className="text-cubos-white/70 text-sm mb-6">
+              Tente ajustar seus filtros para encontrar mais resultados
+            </p>
+            <button
+              onClick={handleClearFilters}
+              className="btn-primary"
             >
-              <option value="">Todos os gêneros</option>
-              {genres.map((genre) => (
-                <option
-                  key={genre.id}
-                  value={genre.id}
-                >
-                  {genre.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </header>
-
-      {/* Movies Grid */}
-      <main
-        className="
-        max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8
-      "
-      >
-        {filteredMovies.length === 0 ? (
-          <div
-            className="
-            text-center py-16
-            text-gray-500 dark:text-gray-400 text-lg
-          "
-          >
-            <p>Nenhum filme encontrado</p>
+              Limpar Filtros
+            </button>
           </div>
         ) : (
-          <div
-            className="
-            grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
-            gap-6 sm:gap-8
-          "
-          >
-            {filteredMovies.map((movie) => (
-              <div
+          <div className="grid grid-cols-2 grid-rows-5 md:grid-cols-3 md:grid-rows-4 lg:grid-cols-4 lg:grid-rows-3 2xl:grid-cols-5 2xl:grid-rows-2 w-full 2xl:w-figma-container h-auto 2xl:h-figma-container gap-3 sm:gap-4 lg:gap-6 2xl:gap-9 p-2 sm:p-3 lg:p-4 2xl:p-[28px] rounded justify-items-center items-center mx-auto figma-grid-container max-w-screen-2xl">
+            {currentMovies.map((movie) => (
+              <MovieCard
                 key={movie.id}
-                className="
-                  group card card-hover cursor-pointer
-                  overflow-hidden
-                  animate-fade-in
-                "
-                onClick={() => handleMovieClick(movie.id)}
-              >
-                {/* Movie Poster */}
-                <div
-                  className="
-                  relative w-full h-96 sm:h-80 lg:h-96
-                  overflow-hidden
-                "
-                >
-                  <img
-                    src={movie.poster_path}
-                    alt={movie.title}
-                    loading="lazy"
-                    className="
-                      w-full h-full object-cover
-                      transition-transform duration-300
-                      group-hover:scale-105
-                    "
-                  />
-
-                  {/* Rating Badge */}
-                  <div
-                    className="
-                    absolute top-3 right-3
-                    bg-black/80 text-white text-sm font-semibold
-                    px-2 py-1 rounded-full
-                    backdrop-blur-sm
-                  "
-                  >
-                    <span>⭐ {movie.vote_average.toFixed(1)}</span>
-                  </div>
-                </div>
-
-                {/* Movie Info */}
-                <div className="p-4 sm:p-6">
-                  <h3
-                    className="
-                    text-lg font-semibold 
-                    text-gray-900 dark:text-white
-                    mb-2 line-clamp-2 leading-tight
-                  "
-                  >
-                    {movie.title}
-                  </h3>
-
-                  <p
-                    className="
-                    text-sm text-gray-600 dark:text-gray-400 mb-2
-                  "
-                  >
-                    {formatDate(movie.release_date)}
-                  </p>
-
-                  <p
-                    className="
-                    text-sm text-primary-500 font-medium mb-3
-                  "
-                  >
-                    {getGenreNames(movie.genre_ids)}
-                  </p>
-
-                  <p
-                    className="
-                    text-sm text-gray-700 dark:text-gray-300 
-                    leading-relaxed opacity-80
-                    line-clamp-3
-                  "
-                  >
-                    {movie.overview.length > 120
-                      ? `${movie.overview.substring(0, 120)}...`
-                      : movie.overview}
-                  </p>
-                </div>
-              </div>
+                movie={movie}
+                genreNames={getGenreNames(movie.genre_ids)}
+                onClick={handleMovieClick}
+              />
             ))}
           </div>
         )}
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </main>
+
+      <Footer />
+
+      <FilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        selectedGenre={selectedGenre}
+        onGenreChange={setSelectedGenre}
+        genres={genres}
+        onClearFilters={handleClearFilters}
+      />
     </div>
   );
 };

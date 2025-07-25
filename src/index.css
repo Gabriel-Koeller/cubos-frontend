@@ -1,5 +1,5 @@
-/* Import da fonte Inter do Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* Import da fonte Montserrat do Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -8,7 +8,7 @@
 /* Layer base para estilos globais */
 @layer base {
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: "Montserrat", system-ui, sans-serif;
   }
 
   body {
@@ -69,12 +69,16 @@
     @apply hover:-translate-y-1 hover:shadow-card-hover;
   }
 
+  /* Container do grid do Figma */
+  .figma-grid-container {
+    background-color: #ebeaf808;
+  }
+
   /* Estilo para o background pattern do Cubos com gradientes */
   .cubos-bg-pattern {
-    background-image: 
-      linear-gradient(
-        135deg, 
-        rgba(35, 34, 37, 0.95) 0%, 
+    background-image: linear-gradient(
+        135deg,
+        rgba(35, 34, 37, 0.95) 0%,
         rgba(35, 34, 37, 0.85) 25%,
         rgba(35, 34, 37, 0.75) 50%,
         rgba(35, 34, 37, 0.85) 75%,
@@ -86,7 +90,7 @@
         rgba(0, 0, 0, 0.4) 50%,
         rgba(0, 0, 0, 0.7) 100%
       ),
-      url('/src/assets/BACKGROUND-krists-luhaers-543526-unsplash.png');
+      url("/src/assets/BACKGROUND-krists-luhaers-543526-unsplash.png");
     background-size: cover, cover, cover;
     background-position: center, center, center;
     background-attachment: fixed;
@@ -95,10 +99,9 @@
 
   /* Background pattern no modo claro */
   body.light .cubos-bg-pattern {
-    background-image: 
-      linear-gradient(
-        135deg, 
-        rgba(255, 255, 255, 0.95) 0%, 
+    background-image: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.95) 0%,
         rgba(255, 255, 255, 0.85) 25%,
         rgba(255, 255, 255, 0.75) 50%,
         rgba(255, 255, 255, 0.85) 75%,
@@ -110,7 +113,7 @@
         rgba(142, 78, 198, 0.05) 50%,
         rgba(142, 78, 198, 0.1) 100%
       ),
-      url('/src/assets/BACKGROUND-krists-luhaers-543526-unsplash.png');
+      url("/src/assets/BACKGROUND-krists-luhaers-543526-unsplash.png");
     background-size: cover, cover, cover;
     background-position: center, center, center;
     background-attachment: fixed;
@@ -175,10 +178,34 @@
   }
 
   .cubos-gradient {
-    background: linear-gradient(135deg, #8E4EC6 0%, #6a3a9f 100%);
+    background: linear-gradient(135deg, #8e4ec6 0%, #6a3a9f 100%);
   }
 
   .cubos-glow {
     box-shadow: 0 0 20px rgba(142, 78, 198, 0.3);
+  }
+
+  /* Animações para o modal */
+  .animate-in {
+    animation: fadeInZoom 0.2s ease-out forwards;
+  }
+
+  .fade-in {
+    opacity: 0;
+  }
+
+  .zoom-in {
+    transform: scale(0.95);
+  }
+
+  @keyframes fadeInZoom {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 }
