@@ -60,7 +60,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => {
                   stroke="#FFD700"
                   strokeWidth="3"
                   strokeLinecap="round"
-                  strokeDasharray={`${movie.vote_average * 10}, 100`}
+                  strokeDasharray={`${(movie.vote_average || 0) * 10}, 100`}
                   style={{
                     filter: "drop-shadow(0 0 8px rgba(255, 215, 0, 0.6))",
                   }}
@@ -70,7 +70,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-14 h-14 sm:w-16 sm:h-16 2xl:w-20 2xl:h-20 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20">
                   <span className="text-white text-sm sm:text-lg 2xl:text-xl font-bold drop-shadow-2xl">
-                    {Math.round(movie.vote_average * 10)}%
+                    {Math.round((movie.vote_average || 0) * 10)}%
                   </span>
                 </div>
               </div>

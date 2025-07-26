@@ -4,7 +4,8 @@ import { Footer } from "../components/Footer";
 import { MovieCard } from "../components/MovieCard";
 import { Pagination } from "../components/Pagination";
 import { FilterModal } from "../components/FilterModal";
-import { FilterIcon } from "../components/icons";
+import { AddMovieDrawer } from "../components/AddMovieDrawer";
+import { FilterIcon, PlusIcon } from "lucide-react";
 import { moviesAPI } from "../services/api";
 import type { Genre } from "../types";
 import { useNavigate } from "react-router-dom";
@@ -47,9 +48,7 @@ export const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const moviesPerPage = 10;
   const navigate = useNavigate();
-
-  console.log(movies);
-
+  const [isAddMovieDrawerOpen, setIsAddMovieDrawerOpen] = useState(false);
   const loadMovies = async (
     page: number = 1,
     search?: string,
@@ -184,7 +183,12 @@ export const Home: React.FC = () => {
               )}
             </button>
 
-            <button className="h-12 btn-primary text-sm font-medium rounded-xl active:scale-95 transition-all duration-200">
+            <button
+              className="h-12 btn-primary text-sm font-medium rounded-xl active:scale-95 transition-all duration-200"
+              onClick={() => {
+                setIsAddMovieDrawerOpen(true);
+              }}
+            >
               Adicionar Filme
             </button>
           </div>
@@ -223,7 +227,12 @@ export const Home: React.FC = () => {
               )}
             </button>
 
-            <button className="h-[44px] btn-primary whitespace-nowrap">
+            <button
+              onClick={() => {
+                setIsAddMovieDrawerOpen(true);
+              }}
+              className="h-[44px] text-sm btn-primary whitespace-nowrap"
+            >
               Adicionar Filme
             </button>
           </div>
@@ -428,6 +437,15 @@ export const Home: React.FC = () => {
         genres={genres}
         onClearFilters={handleClearFilters}
         onApplyFilters={handleApplyFilters}
+      />
+
+      <AddMovieDrawer
+        isOpen={isAddMovieDrawerOpen}
+        onClose={() => setIsAddMovieDrawerOpen(false)}
+        onMovieAdded={() => {
+          loadMovies();
+          setCurrentPage(1);
+        }}
       />
     </div>
   );

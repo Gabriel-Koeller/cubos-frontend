@@ -1,5 +1,5 @@
 export interface User {
-  id: number; // Mudou de string para number (INTEGER no banco)
+  id: number;
   name: string;
   email: string;
   avatar?: string;
@@ -17,21 +17,23 @@ export interface AuthContextType {
 }
 
 export interface Movie {
-  id: number; // Mudou de string para number (INTEGER no banco)
+  id: number;
   title: string;
-  overview: string;
-  poster_path: string;
-  backdrop_path: string;
-  release_date: string;
-  vote_average: number;
-  genre_ids: number[];
-  popularity: number;
-  user_id: number; // Novo campo para relacionar com o usuário
-  created_at?: string; // Novos campos de timestamp
+  overview?: string;
+  poster_path?: string;
+  backdrop_path?: string;
+  release_date?: string;
+  vote_average?: number;
+  popularity?: number;
+  runtime?: number;
+  revenue?: number;
+  user_id?: number;
+  created_at?: string;
   updated_at?: string;
-  genres?: string; // Campo concatenado retornado pela API
-  genre_names?: string[]; // Array de nomes dos gêneros
-  genre_list?: Genre[]; // Lista de objetos gênero (para detalhes)
+  genres?: string;
+  genre_names?: string[];
+  genre_list?: Genre[];
+  genre_ids?: number[];
 }
 
 export interface Genre {
@@ -45,8 +47,6 @@ export interface ThemeContextType {
   theme: ThemeMode;
   toggleTheme: () => void;
 }
-
-// Novas interfaces para as respostas da API
 
 export interface AuthResponse {
   message: string;

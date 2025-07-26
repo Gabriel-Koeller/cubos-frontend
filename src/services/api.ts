@@ -92,12 +92,14 @@ export const moviesAPI = {
 
   createMovie: async (movieData: {
     title: string;
-    overview: string;
+    overview?: string;
     poster_path?: string;
     backdrop_path?: string;
     release_date?: string;
     vote_average?: number;
     popularity?: number;
+    runtime?: number;
+    revenue?: number;
     genre_ids?: number[];
   }) => {
     const response = await api.post("/movies", movieData);
