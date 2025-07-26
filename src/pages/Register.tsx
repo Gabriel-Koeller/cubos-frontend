@@ -38,8 +38,8 @@ export const Register: React.FC = () => {
       } else {
         setError("Erro ao criar conta. Tente novamente.");
       }
-    } catch (err) {
-      setError("Erro ao criar conta. Tente novamente.");
+    } catch (err: any) {
+      setError(err.message || "Erro ao criar conta. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -47,18 +47,14 @@ export const Register: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-cubos-bg cubos-bg-pattern flex flex-col">
-      {/* Header sem botão logout */}
       <Header showUserActions={false} />
 
-      {/* Form Container */}
       <div className="flex-1 flex items-center justify-center px-4 py-8 relative z-10">
         <div className="w-full max-w-md space-y-6 bg-gray-900/60 bg-cubos-bg-pattern dark:bg-gray-900/20  backdrop-blur-md p-8 rounded-2xl border border-gray-800/30 shadow-2xl">
-          {/* Form */}
           <form
             onSubmit={handleSubmit}
             className="space-y-6"
           >
-            {/* Nome Field */}
             <div>
               <label
                 htmlFor="name"
@@ -77,7 +73,6 @@ export const Register: React.FC = () => {
               />
             </div>
 
-            {/* E-mail Field */}
             <div>
               <label
                 htmlFor="email"
@@ -96,7 +91,6 @@ export const Register: React.FC = () => {
               />
             </div>
 
-            {/* Senha Field */}
             <div>
               <label
                 htmlFor="password"
@@ -116,7 +110,6 @@ export const Register: React.FC = () => {
               />
             </div>
 
-            {/* Confirmar Senha Field */}
             <div>
               <label
                 htmlFor="confirmPassword"
@@ -136,14 +129,12 @@ export const Register: React.FC = () => {
               />
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className="text-red-700 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-900/20 dark:border-red-500/20 text-sm text-center p-3 rounded-lg border theme-transition">
                 {error}
               </div>
             )}
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
@@ -153,7 +144,6 @@ export const Register: React.FC = () => {
             </button>
           </form>
 
-          {/* Login Link */}
           <div className="mt-6 text-center">
             <p className="dark:text-gray-400  dark:text-cubos-placeholder text-sm">
               Já tem uma conta?{" "}

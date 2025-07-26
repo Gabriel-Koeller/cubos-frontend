@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { User, AuthContextType } from "../types";
+import { authAPI } from "../services/api";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -21,72 +22,96 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("cubos-user");
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        localStorage.removeItem("cubos-user");
+    const initializeAuth = async () => {
+      const savedUser = localStorage.getItem("cubos-user");
+      const savedToken = localStorage.getItem("cubos-token");
+
+      if (savedUser && savedToken) {
+        try {
+          // Verificar se o token ainda é válido
+          const response = await authAPI.verifyToken();
+          setUser(response.user);
+        } catch (error) {
+          // Token inválido, limpar localStorage
+          localStorage.removeItem("cubos-user");
+          localStorage.removeItem("cubos-token");
+        }
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    const mockUsers = [
-      {
-        id: "1",
-        name: "Admin",
-        email: "admin@exemplo.com",
-        password: "senha123",
-      },
-      {
-        id: "2",
-        name: "Usuário Demo",
-        email: "demo@cubos.com",
-        password: "123456",
-      },
-    ];
-
-    const foundUser = mockUsers.find(
-      (u) => u.email === email && u.password === password
-    );
-
-    if (foundUser) {
-      const userData: User = {
-        id: foundUser.id,
-        name: foundUser.name,
-        email: foundUser.email,
-      };
-
-      setUser(userData);
-      localStorage.setItem("cubos-user", JSON.stringify(userData));
-      return true;
+    try {
+      const response = await authAPI.login(email, password);
+      
+      if (response.token && response.user) {
+        // Salvar token e dados do usuário
+        localStorage.setItem("cubos-token", response.token);
+        localStorage.setItem("cubos-user", JSON.stringify(response.user));
+        setUser(response.user);
+        return true;
+      }
+      
+      return false;
+    } catch (error: any) {
+      console.error("Erro no login:", error);
+      
+      // Tratar diferentes tipos de erro
+      if (error.response?.status === 401) {
+        throw new Error("Email ou senha incorretos");
+      } else if (error.response?.data?.error) {
+        throw new Error(error.response.data.error);
+      } else {
+        throw new Error("Erro ao fazer login. Tente novamente.");
+      }
     }
-
-    return false;
   };
 
   const register = async (
     name: string,
     email: string,
-    _password: string
+    password: string
   ): Promise<boolean> => {
-    // Cria novo usuário
-    const newUser: User = {
-      id: Date.now().toString(),
-      name,
-      email,
-    };
-
-    setUser(newUser);
-    localStorage.setItem("cubos-user", JSON.stringify(newUser));
-    return true;
+    try {
+      const response = await authAPI.register(name, email, password);
+      
+      if (response.token && response.user) {
+        // Salvar token e dados do usuário
+        localStorage.setItem("cubos-token", response.token);
+        localStorage.setItem("cubos-user", JSON.stringify(response.user));
+        setUser(response.user);
+        return true;
+      }
+      
+      return false;
+    } catch (error: any) {
+      console.error("Erro no cadastro:", error);
+      
+      // Tratar diferentes tipos de erro
+      if (error.response?.status === 400) {
+        throw new Error(error.response.data.error || "Dados inválidos");
+      } else if (error.response?.data?.error) {
+        throw new Error(error.response.data.error);
+      } else {
+        throw new Error("Erro ao criar conta. Tente novamente.");
+      }
+    }
   };
 
-  const logout = (): void => {
-    setUser(null);
-    localStorage.removeItem("cubos-user");
+  const logout = async (): Promise<void> => {
+    try {
+      await authAPI.logout();
+    } catch (error) {
+      console.error("Erro no logout:", error);
+    } finally {
+      // Sempre limpar o estado local, mesmo se a requisição falhar
+      setUser(null);
+      localStorage.removeItem("cubos-token");
+      localStorage.removeItem("cubos-user");
+    }
   };
 
   const value: AuthContextType = {

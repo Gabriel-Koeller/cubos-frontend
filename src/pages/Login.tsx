@@ -25,8 +25,9 @@ export const Login: React.FC = () => {
       } else {
         setError("Email ou senha inválidos");
       }
-    } catch (err) {
-      setError("Erro ao fazer login. Tente novamente.");
+    } catch (err: any) {
+      // O AuthContext já trata os erros e lança mensagens específicas
+      setError(err.message || "Erro ao fazer login. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -47,11 +48,11 @@ export const Login: React.FC = () => {
           >
             {/* Nome/E-mail Field */}
             <div>
-                             <label
-                 htmlFor="email"
-                 className="block text-sm font-medium mb-2 text-cubos-white"
-               >
-                Nome/E-mail
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium mb-2 text-cubos-white"
+              >
+                E-mail
               </label>
               <input
                 id="email"
@@ -59,17 +60,17 @@ export const Login: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="input-field theme-transition"
-                placeholder="Digite seu nome/E-mail"
+                placeholder="Digite seu E-mail"
                 required
               />
             </div>
 
             {/* Senha Field */}
             <div>
-                             <label
-                 htmlFor="password"
-                 className="block text-sm font-medium mb-2 text-cubos-white"
-               >
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium mb-2 text-cubos-white"
+              >
                 Senha
               </label>
               <input
@@ -92,10 +93,10 @@ export const Login: React.FC = () => {
 
             {/* Esqueci minha senha Link */}
             <div className="text-center">
-                             <Link
-                 to="/esqueceu-senha"
-                 className="text-primary-600 hover:text-primary-700 dark:text-cubos-primary dark:hover:text-primary-400 text-sm font-medium transition-colors duration-200"
-               >
+              <Link
+                to="/esqueceu-senha"
+                className="text-primary-600 hover:text-primary-700 dark:text-cubos-primary dark:hover:text-primary-400 text-sm font-medium transition-colors duration-200"
+              >
                 Esqueci minha senha
               </Link>
             </div>
@@ -119,7 +120,7 @@ export const Login: React.FC = () => {
               <strong>E-mail:</strong> admin@exemplo.com
             </p>
             <p className="text-xs text-center text-gray-600 dark:text-cubos-placeholder">
-              <strong>Senha:</strong> senha123
+              <strong>Senha:</strong> 123456
             </p>
           </div>
 

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { ChevronLeftIcon } from "../components/icons";
-import moviesData from "../data/movies.json";
+import { moviesAPI } from "../services/api";
 import type { Movie, Genre } from "../types";
 
 export const MovieDetails: React.FC = () => {
@@ -12,12 +12,46 @@ export const MovieDetails: React.FC = () => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const foundMovie = moviesData.movies.find((m) => m.id === id);
-    setMovie(foundMovie || null);
-    setGenres(moviesData.genres);
-    setLoading(false);
+    const loadMovieDetails = async () => {
+      if (!id) {
+        setError("ID do filme não encontrado");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Converter string para number
+        const movieId = parseInt(id, 10);
+        if (isNaN(movieId)) {
+          setError("ID do filme inválido");
+          setLoading(false);
+          return;
+        }
+
+        // Carregar dados do filme e gêneros em paralelo
+        const [movieResponse, genresResponse] = await Promise.all([
+          moviesAPI.getMovieById(movieId),
+          moviesAPI.getGenres()
+        ]);
+
+        setMovie(movieResponse);
+        setGenres(genresResponse.genres);
+        
+      } catch (err: any) {
+        console.error("Erro ao carregar detalhes do filme:", err);
+        setError("Erro ao carregar detalhes do filme. Tente novamente.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMovieDetails();
   }, [id]);
 
   if (loading) {
@@ -32,14 +66,14 @@ export const MovieDetails: React.FC = () => {
     );
   }
 
-  if (!movie) {
+  if (error || !movie) {
     return (
       <div className="min-h-screen bg-cubos-bg cubos-bg-pattern flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-cubos-white mb-4">
-              Filme não encontrado
+              {error || "Filme não encontrado"}
             </h1>
             <button
               onClick={() => navigate("/")}
@@ -53,12 +87,6 @@ export const MovieDetails: React.FC = () => {
       </div>
     );
   }
-
-  const getGenreNames = (genreIds: number[]) => {
-    return genreIds
-      .map((id) => genres.find((genre) => genre.id === id)?.name)
-      .filter(Boolean);
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR", {
@@ -76,7 +104,10 @@ export const MovieDetails: React.FC = () => {
     }).format(amount);
   };
 
-  const genreNames = getGenreNames(movie.genre_ids);
+  // Usar genre_list se disponível, senão usar genre_names, senão fazer fallback para genre_ids
+  const genreNames = movie.genre_list?.map(g => g.name) || 
+                     movie.genre_names || 
+                     (movie.genre_ids?.map((id) => genres.find((genre) => genre.id === id)?.name).filter(Boolean) || []);
 
   return (
     <div className="min-h-screen bg-cubos-bg cubos-bg-pattern flex flex-col">

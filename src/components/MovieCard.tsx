@@ -3,15 +3,14 @@ import type { Movie } from "../types";
 
 interface MovieCardProps {
   movie: Movie;
-  genreNames: string;
-  onClick: (movieId: string) => void;
+  onClick: (movieId: number) => void;
 }
 
-export const MovieCard: React.FC<MovieCardProps> = ({
-  movie,
-  genreNames,
-  onClick,
-}) => {
+export const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => {
+  const genreNames =
+    movie.genre_names?.join(", ") ||
+    (movie.genres ? movie.genres : "Sem gênero");
+
   return (
     <div
       className="group cursor-pointer animate-fade-in"
