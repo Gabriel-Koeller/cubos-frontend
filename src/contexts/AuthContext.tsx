@@ -28,11 +28,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (savedUser && savedToken) {
         try {
-          // Verificar se o token ainda é válido
           const response = await authAPI.verifyToken();
           setUser(response.user);
         } catch (error) {
-          // Token inválido, limpar localStorage
           localStorage.removeItem("cubos-user");
           localStorage.removeItem("cubos-token");
         }
@@ -46,20 +44,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       const response = await authAPI.login(email, password);
-      
+
       if (response.token && response.user) {
-        // Salvar token e dados do usuário
         localStorage.setItem("cubos-token", response.token);
         localStorage.setItem("cubos-user", JSON.stringify(response.user));
         setUser(response.user);
         return true;
       }
-      
+
       return false;
     } catch (error: any) {
       console.error("Erro no login:", error);
-      
-      // Tratar diferentes tipos de erro
+
       if (error.response?.status === 401) {
         throw new Error("Email ou senha incorretos");
       } else if (error.response?.data?.error) {
@@ -77,20 +73,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   ): Promise<boolean> => {
     try {
       const response = await authAPI.register(name, email, password);
-      
+
       if (response.token && response.user) {
-        // Salvar token e dados do usuário
         localStorage.setItem("cubos-token", response.token);
         localStorage.setItem("cubos-user", JSON.stringify(response.user));
         setUser(response.user);
         return true;
       }
-      
+
       return false;
     } catch (error: any) {
       console.error("Erro no cadastro:", error);
-      
-      // Tratar diferentes tipos de erro
       if (error.response?.status === 400) {
         throw new Error(error.response.data.error || "Dados inválidos");
       } else if (error.response?.data?.error) {
@@ -107,7 +100,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error) {
       console.error("Erro no logout:", error);
     } finally {
-      // Sempre limpar o estado local, mesmo se a requisição falhar
       setUser(null);
       localStorage.removeItem("cubos-token");
       localStorage.removeItem("cubos-user");

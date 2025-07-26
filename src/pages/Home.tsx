@@ -5,7 +5,7 @@ import { MovieCard } from "../components/MovieCard";
 import { Pagination } from "../components/Pagination";
 import { FilterModal } from "../components/FilterModal";
 import { AddMovieDrawer } from "../components/AddMovieDrawer";
-import { FilterIcon, PlusIcon } from "lucide-react";
+import { FilterIcon } from "lucide-react";
 import { moviesAPI } from "../services/api";
 import type { Genre } from "../types";
 import { useNavigate } from "react-router-dom";

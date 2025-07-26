@@ -26,7 +26,6 @@ export const Login: React.FC = () => {
         setError("Email ou senha inválidos");
       }
     } catch (err: any) {
-      // O AuthContext já trata os erros e lança mensagens específicas
       setError(err.message || "Erro ao fazer login. Tente novamente.");
     } finally {
       setIsLoading(false);
@@ -35,18 +34,13 @@ export const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-cubos-bg cubos-bg-pattern flex flex-col">
-      {/* Header sem botão logout */}
       <Header showUserActions={false} />
-
-      {/* Form Container */}
       <div className="flex-1 flex items-center justify-center px-4 py-8 relative z-10">
         <div className="w-full max-w-md space-y-6 bg-gray-900/60 bg-cubos-bg-pattern dark:bg-gray-900/20 backdrop-blur-md p-8 rounded-2xl border border-gray-800/30 shadow-2xl">
-          {/* Form */}
           <form
             onSubmit={handleSubmit}
             className="space-y-6"
           >
-            {/* Nome/E-mail Field */}
             <div>
               <label
                 htmlFor="email"
@@ -64,8 +58,6 @@ export const Login: React.FC = () => {
                 required
               />
             </div>
-
-            {/* Senha Field */}
             <div>
               <label
                 htmlFor="password"
@@ -83,15 +75,11 @@ export const Login: React.FC = () => {
                 required
               />
             </div>
-
-            {/* Error Message */}
             {error && (
               <div className="text-red-700 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-900/20 dark:border-red-500/20 text-sm text-center p-3 rounded-lg border theme-transition">
                 {error}
               </div>
             )}
-
-            {/* Esqueci minha senha Link */}
             <div className="text-center">
               <Link
                 to="/esqueceu-senha"
@@ -100,8 +88,6 @@ export const Login: React.FC = () => {
                 Esqueci minha senha
               </Link>
             </div>
-
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
@@ -110,8 +96,6 @@ export const Login: React.FC = () => {
               {isLoading ? "Entrando..." : "Entrar"}
             </button>
           </form>
-
-          {/* Demo Credentials Info */}
           <div className="mt-8 p-4 bg-gray-100/70 border-gray-300/50 dark:bg-gray-800/30 dark:border-gray-700/50 rounded-lg theme-transition backdrop-blur-sm border">
             <p className="text-xs text-center mb-2 text-gray-700 dark:text-cubos-white">
               <strong>Dados para teste:</strong>
@@ -123,8 +107,6 @@ export const Login: React.FC = () => {
               <strong>Senha:</strong> 123456
             </p>
           </div>
-
-          {/* Forgot Password & Register Links */}
           <div className="mt-6 text-center space-y-3">
             <p className="dark:text-gray-400 dark:text-cubos-placeholder text-sm">
               <Link
@@ -147,8 +129,6 @@ export const Login: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
       <Footer />
     </div>
   );
